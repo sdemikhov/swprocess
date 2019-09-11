@@ -4,6 +4,9 @@ from swprocess import logger
 from swprocess.telnet_connect import connect
 
 
+start_msg = '===> Connection: {}'
+received_msg = '<=== Received: {}'
+
 def massive_send_commands(devices, limit):
     return _massive_send(
         _generate_connections(devices),
@@ -42,10 +45,8 @@ def _massive_send(connections, commands_type, limit):
 
 def _run_commands(connect, commands, commands_type):
     ip = connect.ip
-    start_msg = '===> Connection: {}'
     logger.debug(start_msg.format(ip))
     result = getattr(connect, commands_type)(commands)
     connect.disconnect()
-    received_msg = '<=== Received: {}'
     logger.debug(received_msg.format(ip))
     return (ip, result)

@@ -1,9 +1,15 @@
 from swprocess.dlink.dlink import Dlink
 from swprocess.topaz.topaz import Topaz
+from swprocess.maipu.maipu import Maipu
+from swprocess.qtech.qtech import Qtech
+
 
 device_types = {
     'dlink': Dlink,
-    'topaz': Topaz
+    'topaz': Topaz,
+    'maipu': Maipu,
+    'qtech_2910': Maipu,
+    'qtech_3470': Qtech,
     }
 
 def connect(*args, **kwargs):

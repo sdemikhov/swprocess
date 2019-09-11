@@ -67,11 +67,11 @@ class BaseConnection:
         for command in commands:
             self._write_line(command)
             time.sleep(1)
-            output = self.session.read_very_eager().decode('utf-8')
+            output = self.session.read_until(self.enable_promt,
+                                          timeout=self.timeout).decode('utf-8')
 
             result += output
             
-        time.sleep(1)
         result += self.session.read_until(self.enable_promt,
                                           timeout=self.timeout).decode('utf-8')
         return result
@@ -87,7 +87,8 @@ class BaseConnection:
         for command in commands:
             self._write_line(command)
             time.sleep(1)
-            output = self.session.read_very_eager().decode('utf-8')
+            output = self.session.read_until(self.enable_promt,
+                                          timeout=self.timeout).decode('utf-8')
 
             result += output
             
