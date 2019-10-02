@@ -14,7 +14,7 @@ class BaseConnection:
                  password,
                  secret,
                  device_type,
-                 timeout=5):
+                 timeout=10):
         self.ip = ip
         self.username = username
         self.password = password
@@ -26,6 +26,8 @@ class BaseConnection:
 
     def make_session(self):        
         self.session = telnetlib.Telnet(self.ip, timeout=self.timeout)
+        self.disable_telnet_options()
+        
         self.session.read_until(self.login_user_pattern,
                                 timeout=self.timeout)
         self._write_line(self.username)
@@ -33,14 +35,16 @@ class BaseConnection:
                                 timeout=self.timeout)
         self._write_line(self.password)
         
-        authorised = self.session.read_until(
+        self._auth = self.session.read_until(
             self.base_promt,
             timeout=self.timeout
             ).decode('utf-8')
-        if not self._check_output(authorised) or \
-                    self.login_user_pattern.decode('utf-8') in authorised:
+        if self.login_user_pattern.decode('utf-8') in self._auth:
             raise ValueError(f'{self.ip}: Wrong username or password')
         self._enable_mode()
+
+    def disable_telnet_options(self):
+        pass
 
     def _enable_mode(self):
         self._write_line(self.enable_command)
@@ -91,8 +95,8 @@ class BaseConnection:
                                           timeout=self.timeout).decode('utf-8')
 
             result += output
-            
-        self._write_line('exit')
+        
+        self._write_line(self.exit_command)
         time.sleep(1)
         result += self.session.read_until(self.enable_promt,
                                           timeout=self.timeout).decode('utf-8')

@@ -8,10 +8,11 @@ class Topaz(BaseConnection):
         self.enable_promt = b'#'
         self.enable_command = ''
         self.enable_password_pattern = b''
-        self.config_command = b'configure terminal'
+        self.config_command = 'configure terminal'
         self.error_pattern = [
             '%'
         ]
+        self.exit_command = 'exit'
         
         super().__init__(*args, **kwargs)
 

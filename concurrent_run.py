@@ -6,6 +6,7 @@ from swprocess.telnet_connect import connect
 
 start_msg = '===> Connection: {}'
 received_msg = '<=== Received: {}'
+err_msg = '!!!! Ошибка {err} с устройством {ip}'
 
 def massive_send_commands(devices, limit):
     return _massive_send(
@@ -46,7 +47,11 @@ def _massive_send(connections, commands_type, limit):
 def _run_commands(connect, commands, commands_type):
     ip = connect.ip
     logger.debug(start_msg.format(ip))
-    result = getattr(connect, commands_type)(commands)
+    try:
+        result = getattr(connect, commands_type)(commands)
+    except Exception as err:
+        logger.debug(err_msg.format(ip))
+        raise err
     connect.disconnect()
-    logger.debug(received_msg.format(ip))
+    logger.debug(received_msg.format(ip=ip, err=err))
     return (ip, result)

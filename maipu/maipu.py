@@ -14,6 +14,7 @@ class Maipu(BaseConnection):
         self.error_pattern = [
             '%'
         ]
+        self.exit_command = 'exit'
         
         super().__init__(*args, **kwargs)
 
